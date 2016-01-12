@@ -9,11 +9,10 @@
         {
             Table("BusinessHours");
             Id(x => x.Id);
-
-            DiscriminateSubClassesOnColumn("Discriminator", "Store")
+            
+            DiscriminateSubClassesOnColumn("EntityType")
                 .AlwaysSelectWithValue();
-
-            Map(x => x.Store);
+            
             Map(x => x.StartOfWeek);
             Map(x => x.EndOfWeek);
             Map(x => x.Hours).CustomType<JsonCollectionType<BusinessDay>>();

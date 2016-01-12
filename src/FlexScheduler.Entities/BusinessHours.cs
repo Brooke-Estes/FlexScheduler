@@ -3,11 +3,9 @@
     using System;
     using System.Collections.Generic;
 
-    public  class BusinessHours
+    public abstract  class BusinessHours
     {
         public virtual long Id { get; set; }
-
-        public virtual string Store { get; set; }
         
         public virtual DateTime StartOfWeek { get; set; }
 

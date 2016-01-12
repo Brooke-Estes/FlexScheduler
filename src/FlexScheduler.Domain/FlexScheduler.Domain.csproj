@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassMaps\AvailaibilityClassMap.cs" />
     <Compile Include="ClassMaps\BusinessHoursClassMap.cs" />
     <Compile Include="ClassMaps\StoreClassMap.cs" />
+    <Compile Include="ClassMaps\StoreHoursClassMap.cs" />
     <Compile Include="JsonCollectionType.Generic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

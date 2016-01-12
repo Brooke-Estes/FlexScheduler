@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using Domain.ClassMaps;
     using Entities;
     using FluentNHibernate.Cfg;
@@ -20,7 +21,7 @@
             _sessionFactory = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2012.ShowSql()
                     .ConnectionString(
-                        @"Server=BROOKE-PC\SQLEXPRESS;Initial Catalog=FlexScheduler; Integrated Security=true;"))
+                        @"Server=.;Initial Catalog=FlexScheduler; Integrated Security=true;"))
                 .Mappings(m => m.FluentMappings
                     .AddFromAssemblyOf<StoreClassMap>())
                 .BuildSessionFactory();
@@ -36,63 +37,46 @@
         }
 
         [Test]
-        public void CanPersistStore()
+        public void CanPersistStoreHours()
         {
             using (var session = _sessionFactory.OpenSession())
             {
                 using (var trx = session.BeginTransaction())
                 {
-                    var newStore = new Store
+                    var day1 = new BusinessDay()
+                    {
+                        BusinessDate = new DateTime(2016, 1, 11),
+                        StartOfDay = new DateTime(2016, 1, 11, 9, 0, 0),
+                        EndOfDay = new DateTime(2016, 1, 11, 17, 0, 0)
+                    };
+
+                    var hours = new StoreHours()
                     {
                         Name = "Westridge Kiosk",
-                        Street = "1149 SW Glendale Dr.",
-                        City = "Topeka",
-                        State = "KS",
-                        Zip = "66604"
+                        StartOfWeek = new DateTime(2016, 1, 11),
+                        EndOfWeek = new DateTime(2016, 1, 17),
+                        Hours = new List<BusinessDay>() {day1}
                     };
 
-                    session.Save(newStore);
+                    session.Save(hours);
                     trx.Commit();
-
-                    Assert.AreNotEqual(newStore.Id, 0);
+                    Assert.AreNotEqual(hours.Id,0);
                 }
             }
         }
 
         [Test]
-        public void CanPersistBusinessHours()
+        public void CanQueryStoreHours()
         {
             using (var session = _sessionFactory.OpenSession())
             {
                 using (var trx = session.BeginTransaction())
                 {
-                    var newHours = new BusinessHours
-                    {
-                        Store = "Westridge Kiosk",
-                        StartOfWeek = new DateTime(2016, 1, 11),
-                        EndOfWeek = new DateTime(2016, 1, 17),
-                        Hours = "Test"
-                    };
-
-                    session.Save(newHours);
-                    trx.Commit();
-
-                    Assert.AreNotEqual(newHours.Id, 0);
+                    var results = session.QueryOver<StoreHours>().Where(x => x.Name == "Westridge Kiosk").List();
+                    Assert.IsNotNull(results);
                 }
             }
         }
-
-        [Test]
-        public void CanQuery()
-        {
-            using (var session = _sessionFactory.OpenSession())
-            {
-                var query = session.QueryOver<BusinessHours>()
-                    .Where(s => s.Store == "WestridgeKiosk");
-
-                var result = query.List();
-            }
-        }
+        
     }
-
 }
