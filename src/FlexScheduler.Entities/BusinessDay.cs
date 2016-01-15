@@ -9,5 +9,6 @@
         public DateTime StartOfDay { get; set; }
 
         public DateTime EndOfDay { get; set; }
+
     }
 }

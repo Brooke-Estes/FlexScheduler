@@ -8,7 +8,7 @@
         public AvailaibilityClassMap()
         {
             Map(x => x.FullName).Column("Name");
-            DiscriminatorValue("Availability");
+            DiscriminatorValue("Employee");
         }
     }
 }
